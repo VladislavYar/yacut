@@ -10,25 +10,29 @@ from yacut.functions import get_unique_short_id
 from yacut.constants import REG_VALIATION_SHORT_ID, MAX_LEN_SHORT_ID
 
 
-def validate_create_short_url(data):
+def validate_create_short_url(data: dict) -> None:
     """Валидирует данные при создании короткой ссылки."""
     if not data:
-        raise InvalidAPIUsage('Отсутствует тело запроса', HTTPStatus.BAD_REQUEST)
+        raise InvalidAPIUsage('Отсутствует тело запроса',
+                              HTTPStatus.BAD_REQUEST)
 
     custom_id = data.get('custom_id')
     if not data.get('url'):
-        raise InvalidAPIUsage('"url" является обязательным полем!', HTTPStatus.BAD_REQUEST)
-    if custom_id:
-        if len(custom_id) > MAX_LEN_SHORT_ID or not re.match(REG_VALIATION_SHORT_ID, custom_id):
-            raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки',
-                                  HTTPStatus.BAD_REQUEST)
-        if URLMap.query.filter_by(short=custom_id).first():
-            raise InvalidAPIUsage(f'Имя "{custom_id}" уже занято.',
-                                  HTTPStatus.BAD_REQUEST)
+        raise InvalidAPIUsage('"url" является обязательным полем!',
+                              HTTPStatus.BAD_REQUEST)
+    if not custom_id:
+        return
+    if (len(custom_id) > MAX_LEN_SHORT_ID or
+       not re.match(REG_VALIATION_SHORT_ID, custom_id)):
+        raise InvalidAPIUsage('Указано недопустимое имя для короткой ссылки',
+                              HTTPStatus.BAD_REQUEST)
+    if URLMap.query.filter_by(short=custom_id).first():
+        raise InvalidAPIUsage(f'Имя "{custom_id}" уже занято.',
+                              HTTPStatus.BAD_REQUEST)
 
 
-@app.route('/api/id/<string:short_id>/', methods=['GET'])
-def get_url(short_id):
+@app.route('/api/id/<string:short_id>/', methods=('GET', ))
+def get_url(short_id: str) -> tuple:
     """Отдаёт длинный URL."""
     url_map = URLMap.query.filter_by(short=short_id).first()
     if url_map is None:
@@ -36,8 +40,8 @@ def get_url(short_id):
     return jsonify({'url': url_map.original}), HTTPStatus.OK
 
 
-@app.route('/api/id/', methods=['POST'])
-def create_short_url():
+@app.route('/api/id/', methods=('POST', ))
+def create_short_url() -> tuple:
     """Создает новую короткую ссылку."""
     data = request.get_json()
     validate_create_short_url(data)

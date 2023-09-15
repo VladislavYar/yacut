@@ -12,14 +12,15 @@ class URLMap(db.Model):
     short = db.Column(db.String(16), unique=True, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         """Возвращает словарь свойств."""
         return {
             'url': self.original,
-            'short_link': url_for('redirect_view', short_id=self.short, _external=True),
+            'short_link': url_for('redirect_view', short_id=self.short,
+                                  _external=True),
         }
 
-    def from_dict(self, data):
+    def from_dict(self, data: dict) -> None:
         """Присваивает значения свойствам класса."""
         field_name = {'url': 'original', 'custom_id': 'short', }
         for field, name in field_name.items():
