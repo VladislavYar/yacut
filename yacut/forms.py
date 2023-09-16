@@ -9,17 +9,17 @@ class URLForm(FlaskForm):
     """Форма добавления нового соответсвия длинной ссылки к короткой."""
     original_link = URLField(
         'Длинная ссылка',
-        validators=[DataRequired(message='Обязательное поле'), ]
+        validators=(DataRequired(message='Обязательное поле'), )
     )
     custom_id = StringField(
         'Ваш вариант короткой ссылки',
-        validators=[
+        validators=(
             Length(
                 max=MAX_LEN_SHORT_ID,
                 message=('Длина должна быть не больше '
                          f'{MAX_LEN_SHORT_ID} символов')),
             Regexp(REG_VALIATION_SHORT_ID,
                    message='Допустимы только символы A-z и 0-9')
-        ]
+        )
     )
     submit = SubmitField('Создать')

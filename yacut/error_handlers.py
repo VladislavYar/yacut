@@ -8,9 +8,8 @@ from yacut.exceptions import InvalidAPIUsage
 
 
 @app.errorhandler(InvalidAPIUsage)
-def invalid_api_usage(error) -> tuple:
+def invalid_api_usage(error: InvalidAPIUsage) -> tuple:
     """Возвращает ошибку в JSON формате."""
-    print(type(error))
     return jsonify(error.to_dict()), error.status_code
 
 
