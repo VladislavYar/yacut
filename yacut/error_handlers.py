@@ -1,7 +1,7 @@
 from http import HTTPStatus
 
 from flask import jsonify, render_template
-from werkzeug.exceptions import NotFound, InternalServerError
+from werkzeug.exceptions import InternalServerError, NotFound
 
 from yacut import app, db
 from yacut.exceptions import InvalidAPIUsage
