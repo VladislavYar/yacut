@@ -61,3 +61,6 @@ flask db upgrade
 ```
 flask run
 ```
+
+## Cтек проекта
+Python v3.9, Flask, SQLAlchemy
